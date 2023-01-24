@@ -20,7 +20,7 @@ app.use(express.json());
 
 //routes
 app.get("/api/v1/hello", (req, res) => {
-  res.send("hello");
+  res.send("hello!!");
 });
 
 //if user navigate to a wrong route
