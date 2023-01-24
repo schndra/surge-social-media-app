@@ -10,7 +10,7 @@ module.exports = {
     },
     extend: {
       fontFamily: {
-        body: ["Plus Jakarta Sans", "sans-serif"],
+        body: ["Inter", "sans-serif"],
       },
       width: {
         vw: "90vw",
