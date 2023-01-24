@@ -1,11 +1,13 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
+import { Routes, Route } from "react-router-dom";
+import { Posts, Register, Error } from "./pages";
 
 function App() {
   return (
-    <div>
-      <h1 className="text-red-500 ">hey hey something is working</h1>
-    </div>
+    <Routes>
+      <Route path="/" element={<Register />} />
+      <Route path="/posts" element={<Posts />} />
+      <Route path="*" element={<Error />} />
+    </Routes>
   );
 }
 
