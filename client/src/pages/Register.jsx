@@ -42,15 +42,15 @@ const Register = () => {
   };
 
   return (
-    <main className="flex relative ">
-      <section className="flex-1">
+    <main className="flex  ">
+      <section className="flex-1 relative">
         <img
           src={BgImage}
           alt="background-img"
           className="fixed h-full w-full object-cover -z-40"
         />
         <div className="z-50 w-full h-full bg-black opacity-25"></div>
-        <div className="w-[400px] bg-white absolute top-[25%] left-[20%] p-8 rounded-lg drop-shadow-md">
+        <div className="w-[400px] bg-white absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-8 rounded-lg drop-shadow-md">
           <form onSubmit={handleSubmit}>
             <h3 className="text-center mb-9">
               {value.isUser ? "Login" : "SignUp"}
