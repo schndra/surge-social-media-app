@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import BgImage from "../assets/bgImage.jpg";
 import { FormInputRow } from "../components";
+import { toast } from "react-toastify";
 
 const state = {
   name: "",
+  email: "",
   password: "",
   isUser: true,
 };
@@ -13,13 +15,29 @@ const Register = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const { name, password, email, isUser } = value;
+    if (!email || !password || (!name && !isUser)) {
+      toast.warn("provide all values", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
   };
 
   const handleChange = (e) => {
-    console.log(e.target);
+    // console.log(e.target);
+    console.log("im changed");
+    setValue({ ...value, [e.target.name]: e.target.value });
   };
 
   const toggleUser = () => {
+    //reset the vals
     setValue({ ...value, isUser: !value.isUser });
   };
 
@@ -38,19 +56,28 @@ const Register = () => {
               {value.isUser ? "Login" : "SignUp"}
             </h3>
             {/* <div className="flex flex-col mb-4">
-              <label htmlFor="username">username</label>
+              <label htmlFor="email">email</label>
               <input
                 type="text"
-                name="username"
+                name="email"
                 className="px-2 py-1 border border-gray-300 rounded-md "
               />
             </div> */}
+            {!value.isUser && (
+              <FormInputRow
+                labelText={"name"}
+                name={"name"}
+                type={"text"}
+                handleChange={handleChange}
+                value={value.name}
+              />
+            )}
             <FormInputRow
-              labelText={"username"}
-              name={"username"}
-              type={"text"}
+              labelText={"email"}
+              name={"email"}
+              type={"email"}
               handleChange={handleChange}
-              value={value.name}
+              value={value.email}
             />
             <FormInputRow
               labelText={"password"}
@@ -59,7 +86,10 @@ const Register = () => {
               handleChange={handleChange}
               value={value.password}
             />
-            <button className="bg-slate-500 w-full font-black   text-white rounded-lg px-2 py-1 uppercase tracking-widest  hover:bg-slate-600 my-2 ">
+            <button
+              type="submit"
+              className="bg-slate-500 w-full font-black   text-white rounded-lg px-2 py-1 uppercase tracking-widest  hover:bg-slate-600 my-2 "
+            >
               {value.isUser ? "Login" : "register"}
             </button>
             <p className="capitalize text-xs text-end">
