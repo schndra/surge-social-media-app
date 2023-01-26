@@ -20,7 +20,7 @@ const AppProvider = ({ children }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const BASE_URL = import.meta.env.VITE_MY_URL;
-  console.log(BASE_URL);
+  // console.log(BASE_URL);
 
   const addUserToLocalStorage = (data) => {
     const { token, user } = data;
@@ -30,10 +30,15 @@ const AppProvider = ({ children }) => {
   //remove from local ---> logout
 
   const setUser = async (userData) => {
-    const { currUser, url, textAlert } = userData;
+    const { currUser, url, textAlert, captchaToken } = userData;
+    // console.log(captchaToken);
+    const newData = {
+      ...currUser,
+      captchaToken,
+    };
 
     try {
-      const response = await axios.post(`${BASE_URL}/user/${url}`, currUser);
+      const response = await axios.post(`${BASE_URL}/user/${url}`, newData);
       console.log(response);
       const { user, token } = response.data;
       dispatch({

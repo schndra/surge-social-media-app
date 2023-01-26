@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import BgImage from "../assets/bgImage.jpg";
 import { FormInputRow, Sidebar, ModalBackDrop } from "../components";
 import { toast } from "react-toastify";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { useGlobalContext } from "../context/context";
 import { useNavigate } from "react-router-dom";
+import ReCAPTCHA from "react-google-recaptcha";
 
 const state = {
   name: "",
@@ -19,6 +20,10 @@ const Register = () => {
   const { openSidebar, isSidebarOpen, setUser, user } = useGlobalContext();
   const navigate = useNavigate();
 
+  //recaptcha
+  const captchaRef = useRef(null);
+  const SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
+
   useEffect(() => {
     if (user) {
       navigate("/posts");
@@ -27,7 +32,10 @@ const Register = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const { name, password, email, isUser, username, isLoading } = value;
+    const captchaToken = captchaRef.current.getValue();
+    captchaRef.current.reset();
+    // console.log(captchaToken);
+    const { name, password, email, isUser, username } = value;
     console.log(value);
 
     if (!username || !password || (!name && !isUser)) {
@@ -38,9 +46,19 @@ const Register = () => {
     const currUser = { name, username, email, password };
     //true ===> login   false ===> register
     if (isUser) {
-      setUser({ currUser, url: "", textAlert: "Login successfull" });
+      setUser({
+        currUser,
+        url: "",
+        textAlert: "Login successfull",
+        captchaToken,
+      });
     } else {
-      setUser({ currUser, url: "register", textAlert: "User created" });
+      setUser({
+        currUser,
+        url: "register",
+        textAlert: "User created",
+        captchaToken,
+      });
     }
   };
 
@@ -52,7 +70,7 @@ const Register = () => {
 
   const toggleUser = () => {
     //reset the vals
-
+    captchaRef.current.reset();
     setValue({
       ...value,
       isUser: !value.isUser,
@@ -137,6 +155,7 @@ const Register = () => {
                 handleChange={handleChange}
                 value={value.password}
               />
+              <ReCAPTCHA sitekey={SITE_KEY} ref={captchaRef} />
               <button
                 type="submit"
                 className="bg-slate-500 w-full font-black   text-white rounded-lg px-2 py-1 uppercase tracking-widest  hover:bg-slate-600 my-2 "
