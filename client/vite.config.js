@@ -8,6 +8,14 @@ export default defineConfig({
     watch: {
       usePolling: true,
     },
+    // proxy: {
+    //   "/api": {
+    //     target: "https://localhost:5000",
+    //     changeOrigin: true,
+    //     secure: false,
+    //     ws: true,
+    //   },
+    // },
     host: true, // needed for the Docker Container port mapping to work
     strictPort: true,
     port: 3000, // can replace with any port you want

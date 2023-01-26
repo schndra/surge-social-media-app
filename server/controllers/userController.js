@@ -6,13 +6,15 @@ import BadReqError from "../errors/bad-request-error.js";
 import UnAuthorizedError from "../errors/auth-error.js";
 
 const register = asyncWrapper(async (req, res) => {
-  const { password, name, username } = req.body;
+  // console.log(req.body);
+  const { password, name, username, email } = req.body;
 
   const salt = await bcrypt.genSaltSync(10);
   const hash = await bcrypt.hashSync(password, salt);
 
   const hashedUser = {
     name,
+    email,
     username,
     password: hash,
   };
@@ -24,18 +26,30 @@ const register = asyncWrapper(async (req, res) => {
     { expiresIn: "7d" }
   );
   // console.log(user);
-  res.status(201).json({ user: { name: user.name }, token });
+  res.status(201).json({
+    user: { name: user.name, email: user.email, username: user.username },
+    token,
+  });
 });
 
 const login = asyncWrapper(async (req, res) => {
+  // console.log(req.body);
   // console.log(req.headers);
-  const { username, password } = req.body;
+  const { username, password, email } = req.body;
 
-  if (!username || !password) {
+  if ((!username && !email) || !password) {
     throw new BadReqError("please provide username or password");
   }
+  let find = {};
+  if (username) {
+    find = { ...find, username };
+  }
+  if (email) {
+    find = { ...find, email };
+  }
+  console.log(find);
 
-  const user = await User.findOne({ username });
+  const user = await User.findOne(find);
   // console.log(user);
 
   if (!user) {
@@ -55,7 +69,10 @@ const login = asyncWrapper(async (req, res) => {
     { expiresIn: "7d" }
   );
 
-  res.status(201).json({ user: { name: user.name }, token });
+  res.status(201).json({
+    user: { name: user.name, username: user.username, email: user.email },
+    token,
+  });
 });
 
 export { register, login };
