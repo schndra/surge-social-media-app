@@ -1,33 +1,61 @@
 import User from "../models/User.js";
-import BadReqError from "../errors/bad-request-error.js";
 import asyncWrapper from "../middleware/catchAsync.js";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import BadReqError from "../errors/bad-request-error.js";
+import UnAuthorizedError from "../errors/auth-error.js";
 
 const register = asyncWrapper(async (req, res) => {
-  const { name, username, password } = req.body;
+  const { password, name, username } = req.body;
 
-  //custom error
-  if (!name) {
-    throw new BadReqError("please provide name");
-  }
+  const salt = await bcrypt.genSaltSync(10);
+  const hash = await bcrypt.hashSync(password, salt);
 
-  const user = await User.create({ ...req.body });
+  const hashedUser = {
+    name,
+    username,
+    password: hash,
+  };
+  const user = await User.create({ ...hashedUser });
   // console.log(user);
-  res.status(201).json({ user });
-
-  // try {
-  //   const user = await User.create({ ...req.body });
-  //   // console.log(user);
-  //   res.status(201).json({ user });
-  // } catch (error) {
-  //   console.log(error);
-  //   // res
-  //   //   .status(500)
-  //   //   .json({ msg: `username ${error.keyValue.username} already exists` });
-  // }
+  const token = jwt.sign(
+    { id: user._id, name: user.name },
+    process.env.JWT_SECRET_KEY,
+    { expiresIn: "7d" }
+  );
+  // console.log(user);
+  res.status(201).json({ user: { name: user.name }, token });
 });
 
 const login = asyncWrapper(async (req, res) => {
-  res.send("login user");
+  // console.log(req.headers);
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    throw new BadReqError("please provide username or password");
+  }
+
+  const user = await User.findOne({ username });
+  // console.log(user);
+
+  if (!user) {
+    throw new UnAuthorizedError("Invalid username or password");
+  }
+
+  //compare password (returns a bool)
+  const isMatched = await bcrypt.compare(password, user.password);
+  // console.log(isMatched);
+  if (!isMatched) {
+    throw new UnAuthorizedError("Invalid password, try again!");
+  }
+
+  const token = jwt.sign(
+    { id: user._id, name: user.name },
+    process.env.JWT_SECRET_KEY,
+    { expiresIn: "7d" }
+  );
+
+  res.status(201).json({ user: { name: user.name }, token });
 });
 
 export { register, login };
