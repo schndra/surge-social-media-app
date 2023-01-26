@@ -6,6 +6,7 @@ import BadReqError from "../errors/bad-request-error.js";
 import UnAuthorizedError from "../errors/auth-error.js";
 
 const register = asyncWrapper(async (req, res) => {
+  // console.log(req.body);
   const { password, name, username, email } = req.body;
 
   const salt = await bcrypt.genSaltSync(10);
@@ -25,10 +26,14 @@ const register = asyncWrapper(async (req, res) => {
     { expiresIn: "7d" }
   );
   // console.log(user);
-  res.status(201).json({ user: { name: user.name }, token });
+  res.status(201).json({
+    user: { name: user.name, email: user.email, username: user.username },
+    token,
+  });
 });
 
 const login = asyncWrapper(async (req, res) => {
+  // console.log(req.body);
   // console.log(req.headers);
   const { username, password, email } = req.body;
 
@@ -64,7 +69,10 @@ const login = asyncWrapper(async (req, res) => {
     { expiresIn: "7d" }
   );
 
-  res.status(201).json({ user: { name: user.name }, token });
+  res.status(201).json({
+    user: { name: user.name, username: user.username, email: user.email },
+    token,
+  });
 });
 
 export { register, login };
