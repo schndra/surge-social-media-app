@@ -14,14 +14,14 @@ const auth = asyncWrapper(async (req, res, next) => {
 
   try {
     const data = jwt.verify(token, process.env.JWT_SECRET_KEY);
-    console.log(data);
+    // console.log(data);
     //add user to post
     const user = await User.findById(data.id).select("-password");
 
     req.user = user;
     next();
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     throw new UnAuthorizedError("Authentication failed");
   }
 });

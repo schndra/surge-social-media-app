@@ -9,7 +9,15 @@ const errorHandler = (err, req, res, next) => {
     return res.status(err.statusCode).json({ msg: err.message });
   }
   if (err.code && err.code === 11000) {
-    customMsg = `username ${err.keyValue.username} already taken, please choose another username`;
+    customMsg = `account already exist with ${
+      err.keyValue.username ? `username` : `email`
+    } ${err.keyValue.username || err.keyValue.email}`;
+    statusCode = 400;
+  }
+  if (err.name === "ValidationError") {
+    customMsg = Object.values(err.errors)
+      .map((obj) => obj.message)
+      .join(",");
     statusCode = 400;
   }
 
