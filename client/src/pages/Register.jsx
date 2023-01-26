@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import BgImage from "../assets/bgImage.jpg";
 import { FormInputRow, Sidebar, ModalBackDrop } from "../components";
 import { toast } from "react-toastify";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { useGlobalContext } from "../context/context";
+import { useNavigate } from "react-router-dom";
 
 const state = {
   name: "",
@@ -15,22 +16,31 @@ const state = {
 
 const Register = () => {
   const [value, setValue] = useState(state);
-  const { openSidebar, isSidebarOpen } = useGlobalContext();
+  const { openSidebar, isSidebarOpen, setUser, user } = useGlobalContext();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      navigate("/posts");
+    }
+  }, [user, navigate]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const { name, password, email, isUser } = value;
-    if (!email || !password || (!name && !isUser)) {
-      toast.warn("provide all values", {
-        position: "top-center",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+    const { name, password, email, isUser, username, isLoading } = value;
+    console.log(value);
+
+    if (!username || !password || (!name && !isUser)) {
+      toast.error("please provide all values");
+      return;
+    }
+
+    const currUser = { name, username, email, password };
+    //true ===> login   false ===> register
+    if (isUser) {
+      setUser({ currUser, url: "", textAlert: "Login successfull" });
+    } else {
+      setUser({ currUser, url: "register", textAlert: "User created" });
     }
   };
 
@@ -84,13 +94,16 @@ const Register = () => {
                 className="px-2 py-1 border border-gray-300 rounded-md "
               />
             </div> */}
-              <FormInputRow
-                labelText={"username"}
-                name={"username"}
-                type={"text"}
-                handleChange={handleChange}
-                value={value.username}
-              />
+              {/* {value.isUser && (
+                <FormInputRow
+                  labelText={"username / email"}
+                  name={"username"}
+                  type={"text"}
+                  handleChange={handleChange}
+                  value={value.username}
+                />
+              )} */}
+
               {!value.isUser && (
                 <FormInputRow
                   labelText={"name"}
@@ -110,6 +123,13 @@ const Register = () => {
                   value={value.email}
                 />
               )}
+              <FormInputRow
+                labelText={"username"}
+                name={"username"}
+                type={"text"}
+                handleChange={handleChange}
+                value={value.username}
+              />
               <FormInputRow
                 labelText={"password"}
                 name={"password"}
