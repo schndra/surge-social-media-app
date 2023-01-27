@@ -19,9 +19,9 @@ const Posts = () => {
   return (
     <>
       {isPostSidebar && <Sidebar posts={true} />}
-      <main className="lg:max-w-[1440px] lg:relative">
+      <main className=" lg:max-w-[1440px] lg:relative">
         <section>
-          <nav className="flex items-center justify-between p-4 lg:hidden shadow-md">
+          <nav className="w-screen fixed top-0 flex items-center justify-between p-4 lg:hidden shadow-md bg-white ">
             <div className="w-32 ">
               <img
                 src={surgeLogo}
@@ -35,7 +35,7 @@ const Posts = () => {
           </nav>
         </section>
 
-        <section>
+        <section className="mt-24">
           {posts.map((item) => {
             return <PostCard key={item._id} {...item} />;
           })}
