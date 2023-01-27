@@ -8,7 +8,7 @@ const PostCard = (props) => {
   const timeago = moment(createdAt).fromNow().split(" ").slice(0, 2).join(" ");
   //   console.log(timeago, "hehehe");
   return (
-    <div className="w-fixed h-[450px] bg-white mx-auto mb-16 shadow-xl">
+    <div className="w-fixed h-[450px] bg-white mx-auto mb-16 shadow-xl ">
       <div className="h-4/5">
         <img
           src={`${postImage}`}
