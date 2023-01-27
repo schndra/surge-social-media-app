@@ -24,6 +24,27 @@ const AppProvider = ({ children }) => {
   const BASE_URL = import.meta.env.VITE_MY_URL;
   // console.log(BASE_URL);
 
+  const customFetch = axios.create({
+    baseURL: `${BASE_URL}`,
+  });
+  customFetch.defaults.headers.common[
+    "Authorization"
+  ] = `Bearer ${state.token}`;
+
+  // Add a request interceptor
+  // customFetch.interceptors.request.use(
+  //   (config) => {
+  //     // Do something before request is sent
+  //     console.log(config.headers);
+  //     // config.headers.common["Authorization"] = `Bearer ${state.token}`;
+  //     return config;
+  //   },
+  //   (error) => {
+  //     // Do something with request error
+  //     return Promise.reject(error);
+  //   }
+  // );
+
   const addUserToLocalStorage = (data) => {
     const { token, user } = data;
     localStorage.setItem("user", JSON.stringify(user));
@@ -61,9 +82,10 @@ const AppProvider = ({ children }) => {
   const getAllPosts = async () => {
     try {
       // console.log(token);
-      const response = await axios.get(`${BASE_URL}/posts`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      // const response = await customFetch.get(`${BASE_URL}/posts`, {
+      //   headers: { Authorization: `Bearer ${token}` },
+      // });
+      const response = await customFetch("/posts");
       const { posts } = response.data;
       // console.log(response);
       dispatch({
