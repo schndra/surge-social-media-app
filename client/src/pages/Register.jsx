@@ -84,7 +84,7 @@ const Register = () => {
   return (
     <>
       <ModalBackDrop />
-      {isSidebarOpen && <Sidebar />}
+      {isSidebarOpen && <Sidebar register={true} />}
       <main className="lg:flex">
         <button
           className="absolute right-7 lg:hidden top-2 "

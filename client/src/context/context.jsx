@@ -9,6 +9,7 @@ const user = localStorage.getItem("user");
 const initialState = {
   user: user ? JSON.parse(user) : null,
   token: token,
+  posts: [],
 };
 
 const AppContext = React.createContext();
@@ -18,9 +19,31 @@ const AppProvider = ({ children }) => {
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPostSidebar, setIsPostSidebar] = useState(false);
 
   const BASE_URL = import.meta.env.VITE_MY_URL;
   // console.log(BASE_URL);
+
+  const customFetch = axios.create({
+    baseURL: `${BASE_URL}`,
+  });
+  customFetch.defaults.headers.common[
+    "Authorization"
+  ] = `Bearer ${state.token}`;
+
+  // Add a request interceptor
+  // customFetch.interceptors.request.use(
+  //   (config) => {
+  //     // Do something before request is sent
+  //     console.log(config.headers);
+  //     // config.headers.common["Authorization"] = `Bearer ${state.token}`;
+  //     return config;
+  //   },
+  //   (error) => {
+  //     // Do something with request error
+  //     return Promise.reject(error);
+  //   }
+  // );
 
   const addUserToLocalStorage = (data) => {
     const { token, user } = data;
@@ -39,7 +62,7 @@ const AppProvider = ({ children }) => {
 
     try {
       const response = await axios.post(`${BASE_URL}/user/${url}`, newData);
-      console.log(response);
+      // console.log(response);
       const { user, token } = response.data;
       dispatch({
         type: "USER_SUCCESS",
@@ -56,6 +79,24 @@ const AppProvider = ({ children }) => {
     // console.log(currUser, url, textAlert);
   };
 
+  const getAllPosts = async () => {
+    try {
+      // console.log(token);
+      // const response = await customFetch.get(`${BASE_URL}/posts`, {
+      //   headers: { Authorization: `Bearer ${token}` },
+      // });
+      const response = await customFetch("/posts");
+      const { posts } = response.data;
+      // console.log(response);
+      dispatch({
+        type: "GET_ALL_POSTS",
+        payload: { posts },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const openSidebar = () => {
     setIsSidebarOpen(true);
     setIsModalOpen(true);
@@ -66,6 +107,10 @@ const AppProvider = ({ children }) => {
     setIsModalOpen(false);
   };
 
+  const togglePostSidebar = () => {
+    setIsPostSidebar(!isPostSidebar);
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -73,8 +118,11 @@ const AppProvider = ({ children }) => {
         openSidebar,
         closeSidebar,
         isSidebarOpen,
+        isPostSidebar,
+        togglePostSidebar,
         isModalOpen,
         setUser,
+        getAllPosts,
       }}
     >
       {children}
