@@ -13,7 +13,7 @@ const register = asyncWrapper(async (req, res) => {
   const response = await axios.post(
     `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.SECRET_KEY}&response=${captchaToken}`
   );
-  if (response.status === 200) {
+  if (response.data.success) {
     const salt = await bcrypt.genSaltSync(10);
     const hash = await bcrypt.hashSync(password, salt);
 
@@ -36,7 +36,7 @@ const register = asyncWrapper(async (req, res) => {
       token,
     });
   } else {
-    res.send("Robot");
+    throw new UnAuthorizedError("Please complete recaptcha");
   }
 });
 
@@ -49,7 +49,7 @@ const login = asyncWrapper(async (req, res) => {
     `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.SECRET_KEY}&response=${captchaToken}`
   );
 
-  if (response.status === 200) {
+  if (response.data.success) {
     if ((!username && !email) || !password) {
       throw new BadReqError("please provide username or password");
     }
@@ -87,7 +87,7 @@ const login = asyncWrapper(async (req, res) => {
       token,
     });
   } else {
-    res.send("Robot");
+    throw new UnAuthorizedError("Please complete recaptcha");
   }
 });
 
