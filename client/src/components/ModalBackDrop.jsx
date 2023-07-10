@@ -8,7 +8,7 @@ const ModalBackDrop = () => {
     <div
       className={`${
         isModalOpen
-          ? "fixed w-full h-full bg-black opacity-25 lg:hidden z-[40]"
+          ? "fixed top-0 w-full h-full bg-black opacity-25 lg:hidden z-[40]"
           : "hidden"
       }`}
       onClick={closeSidebar}

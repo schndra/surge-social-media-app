@@ -7,6 +7,10 @@ const reducer = (state, action) => {
     return { ...state, posts: action.payload.posts };
   }
 
+  if (action.type === "LOGOUT_USER") {
+    return { ...state, user: null };
+  }
+
   throw new Error("no matching action type");
 };
 

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Sidebar, PostCard } from "../components";
+import { Sidebar, PostCard, ModalBackDrop, LogoutButton } from "../components";
 import { useGlobalContext } from "../context/context";
 import { RxHamburgerMenu } from "react-icons/rx";
 import surgeLogo from "../assets/surgeLogo 1.png";
@@ -9,8 +9,14 @@ import UserSVG from "../assets/user.svg";
 // import dummyData from "../dummData";
 
 const Posts = () => {
-  const { isPostSidebar, togglePostSidebar, user, getAllPosts, posts } =
-    useGlobalContext();
+  const {
+    isPostSidebar,
+    togglePostSidebar,
+    user,
+    getAllPosts,
+    posts,
+    removeUser,
+  } = useGlobalContext();
 
   useEffect(() => {
     getAllPosts();
@@ -43,7 +49,7 @@ const Posts = () => {
 
         {/* lg sidebar */}
         <aside className="bg-white  h-screen p-4 hidden  lg:flex items-start justify-center z-50 lg:fixed w-[375px] right-0 shadow-2xl top-0">
-          <div>
+          <div className="flex flex-col  items-center">
             <div className="rounded-full bg-slate-300 w-24 mx-auto mb-4 p-2">
               <img
                 src={
@@ -57,6 +63,7 @@ const Posts = () => {
             </div>
             <h4 className="capitalize">{user.name}</h4>
             <p className="text-center text-gray-500">{user.username}</p>
+            <LogoutButton removeUser={removeUser} />
           </div>
         </aside>
         {/* lg logo */}
