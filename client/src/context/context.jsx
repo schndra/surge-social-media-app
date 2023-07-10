@@ -51,6 +51,13 @@ const AppProvider = ({ children }) => {
     localStorage.setItem("token", token);
   };
   //remove from local ---> logout
+  const removeUser = () => {
+    console.log("im remove");
+    dispatch({ type: "LOGOUT_USER" });
+    toast.success("Logged out successfully");
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+  };
 
   const setUser = async (userData) => {
     const { currUser, url, textAlert, captchaToken } = userData;
@@ -109,6 +116,7 @@ const AppProvider = ({ children }) => {
 
   const togglePostSidebar = () => {
     setIsPostSidebar(!isPostSidebar);
+    setIsModalOpen(!isModalOpen);
   };
 
   return (
@@ -123,6 +131,7 @@ const AppProvider = ({ children }) => {
         isModalOpen,
         setUser,
         getAllPosts,
+        removeUser,
       }}
     >
       {children}

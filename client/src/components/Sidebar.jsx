@@ -2,9 +2,11 @@ import React from "react";
 import { IoCloseOutline } from "react-icons/io5";
 import { useGlobalContext } from "../context/context";
 import UserSVG from "../assets/user.svg";
+import LogoutButton from "./LogoutButton";
 
 const Sidebar = (props) => {
-  const { closeSidebar, togglePostSidebar, user } = useGlobalContext();
+  const { closeSidebar, togglePostSidebar, user, removeUser } =
+    useGlobalContext();
 
   if (props.register) {
     return (
@@ -30,7 +32,7 @@ const Sidebar = (props) => {
           size={50}
           onClick={togglePostSidebar}
         />
-        <div>
+        <div className="flex flex-col items-center">
           <div className="rounded-full bg-slate-300 w-24 mx-auto mb-4 p-2">
             <img
               src={
@@ -44,6 +46,7 @@ const Sidebar = (props) => {
           </div>
           <h4 className="capitalize">{user.name}</h4>
           <p className="text-center text-gray-500">{user.username}</p>
+          <LogoutButton removeUser={removeUser} />
         </div>
       </aside>
     );
